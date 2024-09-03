@@ -1,10 +1,10 @@
-"""add user data
+'''add user data
 
 Revision ID: 197a61352aaf
 Revises: 
 Create Date: 2024-09-03 21:08:49.156571
 
-"""
+'''
 from typing import Sequence, Union
 
 from alembic import op
