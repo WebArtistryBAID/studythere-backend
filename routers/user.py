@@ -64,11 +64,12 @@ def login_token_redirect(redirect: str, error: str | None = None, token: str | N
     if r.status_code != 200:
         return RedirectResponse(redirect + "?error=error", status_code=302)
     data = r.json()
+    print(data)
     if crud.get_user(db, data["usin"]) is None:
-        user = crud.create_user(db, data["usin"], data["name"], data.get("pinyin"))
+        user = crud.create_user(db, data["usin"], data["id"], data["name"], data.get("pinyin"), token)
     else:
-        user = crud.update_user(db, crud.get_user(db, data["usin"]), data["name"], data.get("pinyin"))
-    to_encode = {"name": data["name"], "id": data["usin"], "permissions": user.permissions,
+        user = crud.update_user(db, crud.get_user(db, data["usin"]), data["name"], data.get("pinyin"), token)
+    to_encode = {"name": data["name"], "id": data["usin"], "seiueID": data["id"], "permissions": user.permissions,
             "exp": datetime.now(timezone.utc) + timedelta(days=30)}
     encoded = jwt.encode(to_encode, key=os.environ["JWT_SECRET_KEY"], algorithm="HS256")
     return RedirectResponse(redirect + "?token=" + urllib.parse.quote(encoded, safe="") + "&name=" + urllib.parse.quote(data["name"], safe=""), status_code=302)
