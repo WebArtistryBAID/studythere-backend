@@ -2,8 +2,8 @@ from pydantic.v1 import BaseModel
 
 
 class UserSchema(BaseModel):
-    id: str
     seiueID: int
+    eduID: str
     name: str
     permissions: str
     pinyin: str | None

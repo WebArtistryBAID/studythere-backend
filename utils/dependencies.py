@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session
 from data.database import SessionLocal
 from utils import crud
 
+USER_AGENT = "Beijing Academy (BAID) StudyThere, Web, https://beijing.academy"
+
 
 def get_db():
     db = SessionLocal()
