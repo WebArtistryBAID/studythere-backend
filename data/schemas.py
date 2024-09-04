@@ -1,4 +1,4 @@
-from pydantic.v1 import BaseModel
+from pydantic import BaseModel
 
 
 class UserSchema(BaseModel):
@@ -17,7 +17,7 @@ class RoomActivitySchema(BaseModel):
     name: str
     day: int
     people: str
-    roomId: int
+    roomId: str
     periodId: int
     contributor: UserSchema
 
@@ -26,7 +26,7 @@ class RoomActivitySchema(BaseModel):
 
 
 class RoomSchema(BaseModel):
-    id: int
+    id: str
     description: str
     activities: list[RoomActivitySchema]
 
