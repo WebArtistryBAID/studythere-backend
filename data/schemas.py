@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from pydantic.v1 import BaseModel
 
 
@@ -30,7 +28,7 @@ class RoomActivitySchema(BaseModel):
 class RoomSchema(BaseModel):
     id: int
     description: str
-    activities: list[RoomActivitySchema] | None
+    activities: list[RoomActivitySchema]
 
     class Config:
         from_attributes = True

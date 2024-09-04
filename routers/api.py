@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List
 
 from fastapi import APIRouter
 from fastapi.params import Depends
@@ -27,7 +26,7 @@ def get_room(room: str, db: Session = Depends(get_db)):
     return crud.ensure_not_none(crud.get_room(db, room))
 
 
-@router.get('/current', response_model=RoomActivitySchema | str)
+@router.get('/room/current', response_model=RoomActivitySchema | str)
 def get_current_activity(room: str, db: Session = Depends(get_db)):
     room_model = crud.ensure_not_none(crud.get_room(db, room))
     now = datetime.now()
