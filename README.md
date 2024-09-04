@@ -4,7 +4,7 @@ This is the backend for StudyThere, a tool for students to find available empty 
 
 ## Get Started
 
-To run in production, follow the tutorial under (...).
+To run in production, follow the tutorial under [WebArtistryBAID](https://github.com/WebArtistryBAID)/[**studythere-docker**](https://github.com/WebArtistryBAID/studythere-docker).
 
 To run in development:
 
