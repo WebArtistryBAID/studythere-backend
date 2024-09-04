@@ -16,8 +16,11 @@ class UserSchema(BaseModel):
 
 class RoomActivitySchema(BaseModel):
     id: int
+    name: str
+    day: int
     roomId: int
     periodId: int
+    contributor: UserSchema
 
     class Config:
         from_attributes = True
@@ -34,5 +37,5 @@ class RoomSchema(BaseModel):
 
 class PeriodSchema(BaseModel):
     id: int
-    startTime: datetime
-    endTime: datetime
+    startTime: str
+    endTime: str

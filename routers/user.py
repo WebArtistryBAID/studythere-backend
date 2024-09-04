@@ -28,7 +28,7 @@ def login_redirect(redirect: str):
 def login_capture_token(redirect: str):
     # We have been redirected back from SEIUE and is within a separate context from the SPA
     # SEIUE, for some reason, includes the access token in a hashtag, so we must use JavaScript to extract it
-    return '''
+    return """
 <!DOCTYPE html>
 <html lang='en'>
 <head>
@@ -41,16 +41,16 @@ def login_capture_token(redirect: str):
             const token = location.hash.replace('#', '')
             const match = token.match(/access_token=([^&]*)/)
             if (match && match[1]) {
-                window.location.replace(`''' + os.environ[
-        'API_HOST'] + '''/login/exchange?token=${encodeURIComponent(match[1])}&redirect=${encodeURIComponent('''' + redirect + '''')}`)
+                window.location.replace(`""" + os.environ[
+        'API_HOST'] + """/login/exchange?token=${encodeURIComponent(match[1])}&redirect=${encodeURIComponent('""" + redirect + """')}`)
             }
         } else {
-            window.location.replace('''' + os.environ['API_HOST'] + '''/login/exchange?error=token')
+            window.location.replace('""" + os.environ['API_HOST'] + """/login/exchange?error=token')
         }
     </script>
 </body>
 </html>
-'''
+"""
 
 
 @router.get('/login/exchange')
@@ -68,7 +68,6 @@ def login_token_redirect(redirect: str, error: str | None = None, token: str | N
     if r.status_code != 200:
         return RedirectResponse(redirect + '?error=profile', status_code=302)
     data = r.json()
-    print(data)
     if crud.get_user(db, data['id']) is None:
         user = crud.create_user(db, data['id'], data['usin'], data['name'], data.get('pinyin'), token, datetime.now(),
                                 '')

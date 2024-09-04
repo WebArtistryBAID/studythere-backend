@@ -3,8 +3,9 @@ from datetime import datetime, timedelta
 import requests
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy.sql.operators import endswith_op
 
-from data.models import User
+from data.models import User, Period, RoomActivity, Room
 from utils.dependencies import USER_AGENT
 
 
@@ -56,6 +57,19 @@ def delete_user(session: Session, user: User):
     session.commit()
 
 
+def get_room(session: Session, room_id: str):
+    return session.query(Room).filter(Room.id == room_id).one_or_none()
+
+
+def get_period(session: Session, period_time: str):
+    return session.query(Period).filter(Period.startTime == period_time).one_or_none()
+
+
+def get_room_activity(session: Session, period_id: int, day: int, room_id: str, name: str):
+    return session.query(RoomActivity).filter(RoomActivity.periodId == period_id, RoomActivity.day == day,
+                                              RoomActivity.roomId == room_id, RoomActivity.name == name).one_or_none()
+
+
 def update_schedules_based_on_user(session: Session, user: User):
     # Get events from beginning of this calendar week to end of this calendar week
     today = datetime.today()
@@ -72,6 +86,28 @@ def update_schedules_based_on_user(session: Session, user: User):
                          'X-School-Id': '452',
                          'User-Agent': USER_AGENT
                      })
-    print(r.text)
     if r.status_code != 200:
         raise HTTPException(status_code=401, detail='SEIUE request for events failed')
+    data = r.json()
+    for clazz in data:
+        start_time = datetime.strptime(clazz['start_time'], '%Y-%m-%d %H:%M:%S')
+        end_time = datetime.strptime(clazz['end_time'], '%Y-%m-%d %H:%M:%S')
+        period = get_period(session, start_time.strftime('%H:%M'))
+        if period is None:
+            period = Period(startTime=start_time.strftime('%H:%M'), endTime=end_time.strftime('%H:%M'))
+            session.add(period)
+            session.commit()
+        name = clazz['title']
+        room = clazz['address']
+
+        room_model = get_room(session, room)
+        if room_model is None:
+            room_model = Room(id=room, description='')
+            session.add(room_model)
+            session.commit()
+
+        activity = get_room_activity(session, period.id, start_time.weekday(), room, name)
+        if activity is None:
+            activity = RoomActivity(name=name, roomId=room, day=start_time.weekday(), periodId=period.id, contributorId=user.seiueID)
+            session.add(activity)
+            session.commit()

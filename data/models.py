@@ -25,15 +25,19 @@ class Room(Base):
 class RoomActivity(Base):
     __tablename__ = 'roomactivities'
     id = Column(Integer, autoincrement=True, primary_key=True, nullable=False)
+    name = Column(String(256), nullable=False)
     roomId = Column(String(4), ForeignKey('rooms.id', ondelete='CASCADE'), nullable=False)
     room = relationship('Room', back_populates='activities')
+    day = Column(Integer, nullable=False)  # 0 for Monday, 1 for Tuesday, etc.
     periodId = Column(Integer, ForeignKey('periods.id', ondelete='CASCADE'), nullable=False)
     period = relationship('Period')
+    contributorId = Column(Integer, ForeignKey('users.seiueID', ondelete='SET NULL'), nullable=False)
+    contributor = relationship('User')
 
 
 # Represents a period in a day.
 class Period(Base):
     __tablename__ = 'periods'
     id = Column(Integer, autoincrement=True, primary_key=True, nullable=False)
-    startTime = Column(DateTime, nullable=False)  # Only time used
-    endTime = Column(DateTime, nullable=False)  # Only time used
+    startTime = Column(String(16), nullable=False)  # In format 01:01
+    endTime = Column(String(16), nullable=False)  # In format 01:01
