@@ -107,7 +107,7 @@ def update_schedules_based_on_user(session: Session, user: User):
         name = clazz['title']
         if "体育" in name:
             continue
-        room = clazz['address']
+        room = clazz['address'].replace('机房', '')
         people = ''
 
         room_model = get_room(session, room)
