@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 import requests
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.operators import endswith_op
 
 from data.models import User, Period, RoomActivity, Room
 from utils.dependencies import USER_AGENT
@@ -57,6 +56,14 @@ def delete_user(session: Session, user: User):
     session.commit()
 
 
+def get_rooms(session: Session):
+    return session.query(Room).all()
+
+
+def get_periods(session: Session):
+    return session.query(Period).all()
+
+
 def get_room(session: Session, room_id: str):
     return session.query(Room).filter(Room.id == room_id).one_or_none()
 
@@ -98,7 +105,10 @@ def update_schedules_based_on_user(session: Session, user: User):
             session.add(period)
             session.commit()
         name = clazz['title']
+        if "体育" in name:
+            continue
         room = clazz['address']
+        people = ''
 
         room_model = get_room(session, room)
         if room_model is None:
@@ -108,6 +118,7 @@ def update_schedules_based_on_user(session: Session, user: User):
 
         activity = get_room_activity(session, period.id, start_time.weekday(), room, name)
         if activity is None:
-            activity = RoomActivity(name=name, roomId=room, day=start_time.weekday(), periodId=period.id, contributorId=user.seiueID)
+            activity = RoomActivity(name=name, day=start_time.weekday(), people=people, periodId=period.id, contributorId=user.seiueID)
+            activity.room = room_model
             session.add(activity)
             session.commit()

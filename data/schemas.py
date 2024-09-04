@@ -18,6 +18,7 @@ class RoomActivitySchema(BaseModel):
     id: int
     name: str
     day: int
+    people: str
     roomId: int
     periodId: int
     contributor: UserSchema
@@ -29,7 +30,7 @@ class RoomActivitySchema(BaseModel):
 class RoomSchema(BaseModel):
     id: int
     description: str
-    activities: list[RoomActivitySchema]
+    activities: list[RoomActivitySchema] | None
 
     class Config:
         from_attributes = True

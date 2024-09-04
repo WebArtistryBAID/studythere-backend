@@ -20,6 +20,7 @@ class Room(Base):
     __tablename__ = 'rooms'
     id = Column(String(4), primary_key=True, nullable=False)
     description = Column(String(256))
+    activities = relationship('RoomActivity', back_populates='room', lazy='dynamic')
 
 
 class RoomActivity(Base):
@@ -28,9 +29,10 @@ class RoomActivity(Base):
     name = Column(String(256), nullable=False)
     roomId = Column(String(4), ForeignKey('rooms.id', ondelete='CASCADE'), nullable=False)
     room = relationship('Room', back_populates='activities')
-    day = Column(Integer, nullable=False)  # 0 for Monday, 1 for Tuesday, etc.
+    people = Column(String(1024), nullable=False)  # Space-separated list of names
     periodId = Column(Integer, ForeignKey('periods.id', ondelete='CASCADE'), nullable=False)
-    period = relationship('Period')
+    period = relationship('Period', back_populates='activities')
+    day = Column(Integer, nullable=False)  # 0 for Monday, 1 for Tuesday, etc.
     contributorId = Column(Integer, ForeignKey('users.seiueID', ondelete='SET NULL'), nullable=False)
     contributor = relationship('User')
 
@@ -41,3 +43,4 @@ class Period(Base):
     id = Column(Integer, autoincrement=True, primary_key=True, nullable=False)
     startTime = Column(String(16), nullable=False)  # In format 01:01
     endTime = Column(String(16), nullable=False)  # In format 01:01
+    activities = relationship('RoomActivity', back_populates='period', lazy='dynamic')
