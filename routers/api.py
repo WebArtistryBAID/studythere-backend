@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 from fastapi import APIRouter
 from fastapi.params import Depends
@@ -30,7 +30,7 @@ def get_room(room: str, db: Session = Depends(get_db)):
 @router.get('/room/current', response_model=RoomActivityResponseSchema)
 def get_current_activity(room: str, db: Session = Depends(get_db)):
     room_model = crud.ensure_not_none(crud.get_room(db, room))
-    now = datetime.now()
+    now = datetime.now(tz=timezone(timedelta(hours=8)))
 
     for activity in room_model.activities:
         start_time = datetime(now.year, now.month, now.day, int(activity.period.startTime.split(":")[0]), int(activity.period.startTime.split(":")[1]))
