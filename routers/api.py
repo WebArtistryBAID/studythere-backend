@@ -4,8 +4,8 @@ from fastapi import APIRouter
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
 
-from data.schemas import RoomSchema, PeriodSchema, RoomActivitySchema, RoomActivityResponseSchema, \
-    RoomActivityResponseType
+from data.schemas import RoomSchema, PeriodSchema, RoomActivityResponseSchema, \
+    RoomActivityResponseType, RoomSchemaExpanded
 from utils import crud
 from utils.dependencies import get_db
 
@@ -22,7 +22,7 @@ def get_periods(db: Session = Depends(get_db)):
     return crud.get_periods(db)
 
 
-@router.get('/room', response_model=RoomSchema)
+@router.get('/room', response_model=RoomSchemaExpanded)
 def get_room(room: str, db: Session = Depends(get_db)):
     return crud.ensure_not_none(crud.get_room(db, room))
 

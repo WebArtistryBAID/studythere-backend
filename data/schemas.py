@@ -41,6 +41,12 @@ class RoomActivityResponseSchema(BaseModel):
 class RoomSchema(BaseModel):
     id: str
     description: str
+
+    class Config:
+        from_attributes = True
+
+
+class RoomSchemaExpanded(RoomSchema):
     activities: list[RoomActivitySchema]
 
     class Config:
