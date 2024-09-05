@@ -33,8 +33,8 @@ def get_current_activity(room: str, db: Session = Depends(get_db)):
     now = datetime.now(tz=timezone(timedelta(hours=8)))
 
     for activity in room_model.activities:
-        start_time = datetime(now.year, now.month, now.day, int(activity.period.startTime.split(":")[0]), int(activity.period.startTime.split(":")[1]))
-        end_time = datetime(now.year, now.month, now.day, int(activity.period.endTime.split(":")[0]), int(activity.period.endTime.split(":")[1]))
+        start_time = datetime(now.year, now.month, now.day, int(activity.period.startTime.split(":")[0]), int(activity.period.startTime.split(":")[1]), tzinfo=timezone(timedelta(hours=8)))
+        end_time = datetime(now.year, now.month, now.day, int(activity.period.endTime.split(":")[0]), int(activity.period.endTime.split(":")[1]), tzinfo=timezone(timedelta(hours=8)))
         if activity.day == now.weekday():
             if start_time.time() <= now.time() <= end_time.time():
                 return RoomActivityResponseSchema(
