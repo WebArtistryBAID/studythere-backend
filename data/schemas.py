@@ -1,3 +1,5 @@
+import enum
+
 from pydantic import BaseModel
 
 
@@ -23,6 +25,17 @@ class RoomActivitySchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class RoomActivityResponseType(enum.Enum):
+    none = 'none'
+    live = 'live'
+    upcoming = 'upcoming'
+
+
+class RoomActivityResponseSchema(BaseModel):
+    type: RoomActivityResponseType
+    activity: RoomActivitySchema | None
 
 
 class RoomSchema(BaseModel):
