@@ -19,7 +19,7 @@ class RoomActivitySchema(BaseModel):
     people: str
     roomId: str
     periodId: int
-    contributor: UserSchema
+    contributor: UserSchema | None
 
     class Config:
         from_attributes = True

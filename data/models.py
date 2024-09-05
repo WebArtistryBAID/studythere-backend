@@ -33,7 +33,7 @@ class RoomActivity(Base):
     periodId = Column(Integer, ForeignKey('periods.id', ondelete='CASCADE'), nullable=False)
     period = relationship('Period', back_populates='activities')
     day = Column(Integer, nullable=False)  # 0 for Monday, 1 for Tuesday, etc.
-    contributorId = Column(Integer, ForeignKey('users.seiueID', ondelete='SET NULL'), nullable=False)
+    contributorId = Column(Integer, ForeignKey('users.seiueID', ondelete='SET NULL'))
     contributor = relationship('User')
 
 
