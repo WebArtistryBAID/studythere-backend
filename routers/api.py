@@ -32,10 +32,15 @@ def get_current_activity(room: str, db: Session = Depends(get_db)):
     room_model = crud.ensure_not_none(crud.get_room(db, room))
     now = datetime.now(tz=timezone(timedelta(hours=8)))
 
+    effective_day = now.weekday()
+    reschedule = crud.get_reschedule(db)
+    if reschedule is not None:
+        effective_day = reschedule.day_target
+
     for activity in room_model.activities:
         start_time = datetime(now.year, now.month, now.day, int(activity.period.startTime.split(":")[0]), int(activity.period.startTime.split(":")[1]), tzinfo=timezone(timedelta(hours=8)))
         end_time = datetime(now.year, now.month, now.day, int(activity.period.endTime.split(":")[0]), int(activity.period.endTime.split(":")[1]), tzinfo=timezone(timedelta(hours=8)))
-        if activity.day == now.weekday():
+        if activity.day == effective_day:
             if start_time.time() <= now.time() <= end_time.time():
                 return RoomActivityResponseSchema(
                     type=RoomActivityResponseType.live,

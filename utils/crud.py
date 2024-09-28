@@ -1,10 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import requests
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from data.models import User, Period, RoomActivity, Room
+from data.models import User, Period, RoomActivity, Room, Reschedule
 from utils.dependencies import USER_AGENT
 
 
@@ -75,6 +75,11 @@ def get_period(session: Session, period_time: str):
 def get_room_activity(session: Session, period_id: int, day: int, room_id: str, name: str):
     return session.query(RoomActivity).filter(RoomActivity.periodId == period_id, RoomActivity.day == day,
                                               RoomActivity.roomId == room_id, RoomActivity.name == name).one_or_none()
+
+
+def get_reschedule(session: Session):
+    now = datetime.now(tz=timezone(timedelta(hours=8)))
+    return session.query(Reschedule).filter(Reschedule.day == now.strftime('%Y-%m-%d')).one_or_none()
 
 
 def update_schedules_based_on_user(session: Session, user: User):

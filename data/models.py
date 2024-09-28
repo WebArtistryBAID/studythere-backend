@@ -1,3 +1,5 @@
+from contextlib import nullcontext
+
 from sqlalchemy import Column, String, Integer, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -44,3 +46,11 @@ class Period(Base):
     startTime = Column(String(16), nullable=False)  # In format 01:01
     endTime = Column(String(16), nullable=False)  # In format 01:01
     activities = relationship('RoomActivity', back_populates='period', lazy='dynamic')
+
+
+# "Days in lieu" in China.
+class Reschedule(Base):
+    __tablename__ = 'reschedules'
+    id = Column(Integer, autoincrement=True, primary_key=True, nullable=False)
+    day = Column(String(15), nullable=False)
+    day_target = Column(Integer, nullable=False)  # 0 for Monday, 1 for Tuesday, etc.
